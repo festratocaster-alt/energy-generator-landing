@@ -1,0 +1,6 @@
+# Copy to .dev.vars for local Cloudflare development, then enter actual values.
+# This example intentionally contains no working credentials.
+TELEGRAM_BOT_TOKEN=""
+TELEGRAM_CHAT_ID=""
+TELEGRAM_MESSAGE_THREAD_ID=""
+LEAD_HASH_SALT=""
