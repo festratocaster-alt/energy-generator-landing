@@ -45,3 +45,6 @@ yarn-error.log*
 
 # OS metadata
 .DS_Store
+/timeweb/frontend/index.html
+/timeweb/server/config.php
+/timeweb/server/storage/
