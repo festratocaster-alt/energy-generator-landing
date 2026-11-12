@@ -12,7 +12,7 @@ pnpm build:timeweb
 
 Готовый пакет: `outputs/timeweb/`, папки `public_html` и `private`. Полная инструкция загрузки, подключения Telegram, переключения домена и отката: [timeweb/README.md](timeweb/README.md).
 
-Требуется PHP 8.3/8.4 с `curl`, `mbstring`, `PDO` и `pdo_sqlite`. Node.js на сервере не нужен. Приватная конфигурация и SQLite хранятся вне `public_html`; реальные секреты отсутствуют в исходниках и готовой сборке. Пример: [timeweb/server/config.example.php](timeweb/server/config.example.php).
+Требуется PHP 8.3/8.4 с `curl`, `mbstring`, `PDO` и `pdo_sqlite`. Node.js на сервере не нужен. Приватная конфигурация и SQLite хранятся вне `public_html`; реальные секреты отсутствуют в исходниках и готовой сборке. Именованные переменные окружения хранятся в приватном `.env` либо окружении сервера. Пример без секретов: [timeweb/server/.env.example](timeweb/server/.env.example).
 
 ```sh
 php tests/timeweb-leads.test.php

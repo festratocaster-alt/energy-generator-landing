@@ -16,6 +16,10 @@ if ($private === false || ($documentRoot !== false && str_starts_with($private .
 
 try {
     require_once $private . '/lead-handler.php';
+    foreach (\Energy\Timeweb\readEnvironmentFile($private . '/.env') as $key => $value) {
+        $processValue = getenv($key);
+        if (!isset($_ENV[$key]) && ($processValue === false || $processValue === '')) $_ENV[$key] = $value;
+    }
     $config = require $private . '/config.example.php';
     if (is_file($private . '/config.php')) {
         $localConfig = require $private . '/config.php';

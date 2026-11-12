@@ -7,6 +7,28 @@ const GENERATORS = ['Помогите выбрать исполнение', 'В 
 const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'yclid', 'gclid'];
 const UNAVAILABLE = 'Сейчас не удалось отправить заявку. Позвоните нам: +7 (967) 246-26-56.';
 
+/** Minimal dotenv reader: only the four documented secret variables, no evaluation/expansion. */
+function readEnvironmentFile(string $file): array
+{
+    if (!is_file($file)) return [];
+    $contents = file_get_contents($file, false, null, 0, 8193);
+    if ($contents === false || strlen($contents) > 8192) throw new \RuntimeException('Environment unavailable');
+    $values = [];
+    foreach (preg_split('/\r\n|\n|\r/', $contents) as $line) {
+        $line = trim($line);
+        if ($line === '' || str_starts_with($line, '#')) continue;
+        if (!preg_match('/^(TELEGRAM_BOT_TOKEN|TELEGRAM_CHAT_ID|TELEGRAM_MESSAGE_THREAD_ID|LEAD_HASH_SALT)\s*=\s*(.*)$/D', $line, $match)) continue;
+        $value = trim($match[2]);
+        if ($value !== '' && ($value[0] === '"' || $value[0] === "'")) {
+            if (strlen($value) < 2 || substr($value, -1) !== $value[0]) throw new \RuntimeException('Environment unavailable');
+            $value = substr($value, 1, -1);
+        }
+        if (preg_match('/[\x00-\x1F\x7F]/', $value)) throw new \RuntimeException('Environment unavailable');
+        $values[$match[1]] = $value;
+    }
+    return $values;
+}
+
 function reply(int $status, string $message, array $extra = []): array
 {
     return ['status' => $status, 'body' => array_merge(['ok' => $status === 200, 'message' => $message], $extra)];

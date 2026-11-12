@@ -50,7 +50,8 @@ await build({
 });
 await cp(path.join(source, "public"), publicRoot, { recursive: true });
 await cp(path.join(source, "server"), path.join(output, "private"), {
-  recursive: true, filter: name => path.basename(name) !== "config.php" && !name.split(path.sep).includes("storage"),
+  recursive: true, filter: name => path.basename(name) !== "config.php" &&
+    (!path.basename(name).startsWith(".env") || path.basename(name) === ".env.example") && !name.split(path.sep).includes("storage"),
 });
 await writeFile(path.join(publicRoot, "robots.txt"), `User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: ${origin}/sitemap.xml\n`);
 await writeFile(path.join(publicRoot, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${escape(origin)}/</loc></url></urlset>\n`);

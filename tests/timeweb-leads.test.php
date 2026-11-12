@@ -150,6 +150,15 @@ test('Storage inside document root is rejected', function (): void {
     try { expect(send(lead(), config())['status'], 503); }
     finally { if ($previous === null) unset($_SERVER['DOCUMENT_ROOT']); else $_SERVER['DOCUMENT_ROOT'] = $previous; }
 });
+test('Private dotenv permits only documented keys without evaluating values', function (): void {
+    global $temporary;
+    $file = $temporary . '/environment';
+    file_put_contents($file, '# comment' . "\nTELEGRAM_BOT_TOKEN='test-only-value'\nTELEGRAM_CHAT_ID=-123\nPATH=ignored\nLEAD_HASH_SALT=" . '"${NO_EXPANSION}"' . "\n");
+    $parsed = \Energy\Timeweb\readEnvironmentFile($file);
+    expect($parsed['TELEGRAM_BOT_TOKEN'], 'test-only-value'); expect($parsed['TELEGRAM_CHAT_ID'], '-123');
+    expect($parsed['LEAD_HASH_SALT'], '${NO_EXPANSION}'); expect(isset($parsed['PATH']), false);
+    expect(\Energy\Timeweb\readEnvironmentFile($temporary . '/missing'), []);
+});
 test('Parallel processes reserve a single delivery in real SQLite', function (): void {
     if (!function_exists('pcntl_fork')) throw new RuntimeException('pcntl is needed for the concurrency test');
     global $temporary;
